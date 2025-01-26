@@ -1,3 +1,17 @@
+install the required modules through the IDE terminal :
+--numpy
+--pandas
+--opencv-python
+--tensorflow
+--keras
+--jupyter
+
+I used IntelliJ IDEA 
+
+For calling / messeging Feature
 step 1:create twilio account .
 step 2:Insert your twilio credentials in the camera.py file.
+step 3: set up your number / take a free number in twilio.
+
+
 
