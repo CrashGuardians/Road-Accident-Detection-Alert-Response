@@ -29,14 +29,14 @@ def save_accident_photo(frame):
 
 def call_ambulance():
     try:
-        account_sid = "ACf48d2c173f53f55c724731b2d643674b"
-        auth_token = "70a460a17636460c1fe5d6f5c04e43b2"
+        account_sid = "enter accountsid"
+        auth_token = "enter auth token"
         client = Client(account_sid, auth_token)
 
         call = client.calls.create(
-            url="https://aakashvinod.github.io/twimlfiles/twiml_response.xml",  # Sample TwiML URL
-            to="+918129927118",  # add verified ambulance number
-            from_="(563) 278-3597"
+            url="enter url",  # Sample TwiML URL
+            to="enter phonenumber",  # add verified ambulance number
+            from_="enter phonenumber"
         )
         print(call.sid)
     except Exception as e:
