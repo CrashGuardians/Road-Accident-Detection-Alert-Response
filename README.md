@@ -43,8 +43,15 @@ https://github.com/user-attachments/assets/69ecddbf-3db9-43bb-9c0e-81497fb50600
 
 ### Clone the repository to your local machine and open in an IDE . 
 ### Install the necessary dependencies listed in the requirements file.
-### Before running the program, you need to run the accident-classification.ipynb file which create's the model_weights.keras file. Then, to run this python program, you need to execute the main.py python file.
-### Run the main application script to start monitoring for accidents.
+### Before running the program, you need to run the accident-classification.ipynb file which create's the model_weights.keras file. Then, to run this python program, you need to execute the main.py python file. 
+
+The accident detection works by training the model on labeled images of accidents and non-accidents. Once trained, the model learns to recognize patterns or features in the images that distinguish between the two categories. After training, it can predict whether new, unseen images contain an accident or not based on what it has learned from the training data.
+
+The accuracy of this detection depends on the quality and quantity of the data used to train the model.
+
+The file **accident-classification.ipynb** contains the images and data used to train the model, as well as the necessary code for the training process.
+
+### Run the main application script to start monitoring for accidents (main.py) .
 ### In case of an accident, follow the on-screen instructions for emergency response actions.
 
 # Usage
