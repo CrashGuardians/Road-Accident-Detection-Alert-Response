@@ -38,6 +38,8 @@ https://github.com/user-attachments/assets/69ecddbf-3db9-43bb-9c0e-81497fb50600
 
 ### Automatically calls the emergency authority and also sents a messege with google map link for location.
 
+### Main Features : Beep Sound at time of crash + Screenshot of crash + Automatic Call and SMS with Google Map Link for Location
+
 # Technologies Used
 
 ### Computer Vision: OpenCV for image processing and object detection.
