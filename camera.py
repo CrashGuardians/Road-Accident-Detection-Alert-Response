@@ -7,13 +7,44 @@ import threading
 import time
 import tkinter as tk
 from twilio.rest import Client
-from PIL import Image, ImageTk  # Import PIL modules for image handling
+from PIL import Image, ImageTk
+import geocoder  # Import geocoder for location services
+import requests  # Import requests for API calls
 
 emergency_timer = None
-alarm_triggered = False  # Flag to track if an alarm has been triggered
-
+alarm_triggered = False
 model = AccidentDetectionModel("model.json", "model_weights.keras")
 font = cv2.FONT_HERSHEY_SIMPLEX
+
+def get_location():
+    try:
+        g = geocoder.ip('me')
+        if g.latlng:
+            latitude, longitude = g.latlng
+            map_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+            return map_link
+        else:
+            return "Location not available"
+    except Exception as e:
+        print(f"Error fetching location: {e}")
+        return "Location not available"
+
+
+def send_sms():
+    try:
+        account_sid = "enter "
+        auth_token = "enter "
+        client = Client(account_sid, auth_token)
+        location = get_location()
+        message = client.messages.create(
+            body=f"Accident Detected! Emergency Assistance Needed. Location: {location}",
+            from_="enter",
+            to="enter"
+        )
+        print(f"SMS sent: {message.sid}")
+    except Exception as e:
+        print(f"Error sending SMS: {e}")
+
 
 def save_accident_photo(frame):
     try:
@@ -27,20 +58,22 @@ def save_accident_photo(frame):
     except Exception as e:
         print(f"Error saving accident photo: {e}")
 
+
 def call_ambulance():
     try:
-        account_sid = "enter accountsid"
-        auth_token = "enter auth token"
+        account_sid = "enter"
+        auth_token = "enter"
         client = Client(account_sid, auth_token)
 
         call = client.calls.create(
-            url="enter url",  # Sample TwiML URL
-            to="enter phonenumber",  # add verified ambulance number
-            from_="enter phonenumber"
+            url="enter",
+            to="+enter",
+            from_="(563) 278-3597"
         )
         print(call.sid)
     except Exception as e:
         print(f"Error calling ambulance: {e}")
+
 
 def open_accident_folder():
     try:
@@ -49,29 +82,29 @@ def open_accident_folder():
     except Exception as e:
         print(f"Error opening folder: {e}")
 
+
 def show_alert_message():
     def on_call_ambulance():
         call_ambulance()
+        send_sms()
         alert_window.destroy()
 
-    # Play the beep sound
     frequency = 2500
     duration = 2000
     winsound.Beep(frequency, duration)
 
     alert_window = tk.Tk()
     alert_window.title("Alert")
-    alert_window.geometry("500x300")  # Adjust window size to fit the GIF and message box
+    alert_window.geometry("500x300")
     alert_label = tk.Label(alert_window, text="Alert: Accident Detected!\n\nIs the Accident Critical?", fg="black", font=("Helvetica", 16))
     alert_label.pack()
 
-    # Load and display the GIF
-    gif_path = "Wow-gif.gif"  # Replace with the actual path to your GIF
+    gif_path = "Wow-gif.gif"
     gif = Image.open(gif_path)
-    resized_gif = gif.resize((150, 100), Image.BICUBIC)  # Use Image.BICUBIC for resizing
+    resized_gif = gif.resize((150, 100), Image.BICUBIC)
 
     try:
-        global gif_image  # Create a global variable to hold the reference to the image object
+        global gif_image
         gif_image = ImageTk.PhotoImage(resized_gif)
         gif_label = tk.Label(alert_window, image=gif_image)
         gif_label.pack()
@@ -81,7 +114,6 @@ def show_alert_message():
     call_ambulance_button = tk.Button(alert_window, text="Call Ambulance", command=on_call_ambulance)
     call_ambulance_button.pack()
 
-    # Add a button to open the folder
     open_folder_button = tk.Button(alert_window, text="Open Accident Photos Folder", command=open_accident_folder)
     open_folder_button.pack()
 
@@ -90,13 +122,15 @@ def show_alert_message():
 
     alert_window.mainloop()
 
+
 def start_alert_thread():
     alert_thread = threading.Thread(target=show_alert_message)
-    alert_thread.daemon = True  # Set the thread as daemon so it doesn't block the main thread
+    alert_thread.daemon = True
     alert_thread.start()
 
-def startapplication(): #FOR UPLOADED VIDEO OR DOWNLOADED VIDEO
-    global alarm_triggered  # Use global variable for tracking alarm status
+
+def startapplication():
+    global alarm_triggered
     video = cv2.VideoCapture("car1.mp4")
     while True:
         ret, frame = video.read()
@@ -112,8 +146,8 @@ def startapplication(): #FOR UPLOADED VIDEO OR DOWNLOADED VIDEO
 
             if prob > 99:
                 save_accident_photo(frame)
-                alarm_triggered = True  # Set the alarm_triggered flag to True
-                start_alert_thread()  # Start the alert message thread
+                alarm_triggered = True
+                start_alert_thread()
 
             cv2.rectangle(frame, (0, 0), (280, 40), (0, 0, 0), -1)
             cv2.putText(frame, pred + " " + str(prob), (20, 30), font, 1, (255, 255, 0), 2)
@@ -121,42 +155,6 @@ def startapplication(): #FOR UPLOADED VIDEO OR DOWNLOADED VIDEO
         if cv2.waitKey(33) & 0xFF == ord('q'):
             return
         cv2.imshow('Video', frame)
-
-
-# def startapplication():  #FOR LIVE FEED / CCTV
-#     global alarm_triggered  # Use global variable for tracking alarm status
-#
-#     # Change the video source to the camera feed
-#     video = cv2.VideoCapture(0)  # Use 0 for the default camera (or another number for other cameras)
-#
-#     while True:
-#         ret, frame = video.read()
-#         if not ret:
-#             print("Failed to grab frame from the camera")
-#             break
-#
-#         # Process the frame (convert to RGB, resize, and use model for prediction)
-#         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#         roi = cv2.resize(gray_frame, (250, 250))
-#
-#         pred, prob = model.predict_accident(roi[np.newaxis, :, :])
-#
-#         if pred == "Accident" and not alarm_triggered:
-#             prob = round(prob[0][0] * 100, 2)
-#
-#             if prob > 99:
-#                 save_accident_photo(frame)
-#                 alarm_triggered = True  # Set the alarm_triggered flag to True
-#                 start_alert_thread()  # Start the alert message thread
-#
-#             cv2.rectangle(frame, (0, 0), (280, 40), (0, 0, 0), -1)
-#             cv2.putText(frame, pred + " " + str(prob), (20, 30), font, 1, (255, 255, 0), 2)
-#
-#         if cv2.waitKey(33) & 0xFF == ord('q'):
-#             return
-#
-#         # Show the frame in a window
-#         cv2.imshow('Live Feed', frame)
 
 
 if __name__ == '__main__':
