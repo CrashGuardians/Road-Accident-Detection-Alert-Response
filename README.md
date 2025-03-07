@@ -77,15 +77,25 @@ IDE - IntelliJ IDEA
 
 install the required modules through the IDE terminal :
 --numpy
+
 --pandas
+
 --opencv-python
+
 --tensorflow
+
 --keras
+
 --jupyter
+
 --Flask
+
 --twilio
+
 --geocoder
+
 --Pillow
+
 
 For calling & messeging Feature:
 step 1:create twilio account.
