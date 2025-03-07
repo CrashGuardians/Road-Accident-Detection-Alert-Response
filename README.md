@@ -23,9 +23,13 @@ https://github.com/user-attachments/assets/69ecddbf-3db9-43bb-9c0e-81497fb50600
 
 ### Alert System: Triggers an alert sound upon detecting an accident to notify nearby individuals.
 
+### Front-End contains Start and Stop Detection feature and also an option to see the crash screenshots.
+
 ### Screenshot Capture: Captures a screenshot of the accident scene along with date and time for documentation.
 
 ### Emergency Response: Allows authorized personnel to initiate emergency medical services by calling an ambulance.
+
+### Automatically calls the emergency authority and also sents a messege with google map link for location.
 
 # Technologies Used
 
@@ -43,7 +47,7 @@ https://github.com/user-attachments/assets/69ecddbf-3db9-43bb-9c0e-81497fb50600
 
 ### Clone the repository to your local machine and open in an IDE . 
 ### Install the necessary dependencies listed in the requirements file.
-### Before running the program, you need to run the accident-classification.ipynb file which create's the model_weights.keras file. Then, to run this python program, you need to execute the main.py python file. 
+### Before running the program, you need to run the accident-classification.ipynb file which create's the model_weights.keras file. Then, to run this python program, you need to execute the app.py python file. 
 
 The file **accident-classification.ipynb** contains the images and data used to train the model, as well as the necessary code for the training process.
 
@@ -54,7 +58,7 @@ It is a deep learning model pipeline for image classification using TensorFlow a
 The accuracy of this detection depends on the quality and quantity of the data used to train the model.
 The output or accident detection efficiency may vary each time you train the model, as the model's performance is influenced by many factors.  It's important to experiment and train the model multiple times to fine-tune it and improve the results. You should try training the model several times, until you achieve a satisfactory result. Each training cycle may yield different outcomes.
 
-### Run the main application script to start monitoring for accidents (main.py) .
+### Run the main application script to start monitoring for accidents (app.py) .
 ### In case of an accident, follow the on-screen instructions for emergency response actions.
 
 # Usage
