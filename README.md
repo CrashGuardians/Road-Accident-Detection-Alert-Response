@@ -4,7 +4,7 @@
 # Start-Detection
 ![Screenshot (98)](https://github.com/user-attachments/assets/010f2a25-46f2-4f10-afdc-b716e42db8fd)
 
-# Screenshot
+# Crash-Screenshots
 ![Screenshot (99)](https://github.com/user-attachments/assets/36bddbe2-ccc3-48c9-82f9-9a03a0720915)
 
 
