@@ -71,7 +71,7 @@ The output or accident detection efficiency may vary each time you train the mod
 ### Run the main application script to start monitoring for accidents (app.py) .
 ### In case of an accident, follow the on-screen instructions for emergency response actions.
 
-### Requirements
+# Requirements
 
 IDE - IntelliJ IDEA 
 
