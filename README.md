@@ -71,7 +71,30 @@ The output or accident detection efficiency may vary each time you train the mod
 ### Run the main application script to start monitoring for accidents (app.py) .
 ### In case of an accident, follow the on-screen instructions for emergency response actions.
 
+### Requirements
+
+IDE - IntelliJ IDEA 
+
+install the required modules through the IDE terminal :
+--numpy
+--pandas
+--opencv-python
+--tensorflow
+--keras
+--jupyter
+--Flask
+--twilio
+--geocoder
+--Pillow
+
+For calling & messeging Feature:
+step 1:create twilio account.
+step 2:Insert your twilio credentials in the camera.py file.
+step 3: set up your number / take a free number in twilio.
+ 
 # Usage
 ### The system is designed for use in surveillance and monitoring scenarios where quick detection and response to accidents are crucial. It can be deployed in traffic management systems, surveillance cameras, and other relevant environments.
+
+
 
 
