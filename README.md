@@ -75,7 +75,7 @@ The output or accident detection efficiency may vary each time you train the mod
 
 IDE - IntelliJ IDEA 
 
-install the required modules through the IDE terminal :
+Install the required modules through the IDE terminal :
 --numpy
 
 --pandas
