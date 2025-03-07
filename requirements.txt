@@ -6,6 +6,9 @@ install the required modules through the IDE terminal :
 --keras
 --jupyter
 --Flask
+--twilio
+--geocoder
+--Pillow
 
 I used IntelliJ IDEA 
 
