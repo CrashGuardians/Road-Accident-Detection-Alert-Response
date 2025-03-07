@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e1e2d, #3a3a4f);
+            margin: 0;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+        }
+        .container {
+            padding: 50px;
+            background: rgba(44, 44, 59, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 1.5s ease-in-out;
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        button {
+            padding: 15px 40px;
+            background: #ff4757;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 71, 87, 0.7);
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        button:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 107, 129, 0.8);
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #ff4757;
+            animation: pulse 2s infinite;
+        }
+        /* The video stream is served as an MJPEG stream via an <img> tag */
+        img#videoFeed {
+            margin-top: 20px;
+            width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            display: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <i class="fas fa-car-crash icon"></i>
+    <h1>Accident Detection System</h1>
+    <button onclick="startDetection()">Start Detection</button>
+    <button onclick="stopDetection()">Stop Detection</button>
+    <button onclick="window.location.href='/screenshots'">View Screenshots</button>
+    <img id="videoFeed" src="" alt="Video Stream">
+    <p id="message"></p>
+</div>
+<script>
+    function startDetection() {
+        fetch('/start-detection')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerText = data.message;
+                const videoFeed = document.getElementById('videoFeed');
+                videoFeed.src = '/video';
+                videoFeed.style.display = 'block';
+            })
+            .catch(error => {
+                document.getElementById('message').innerText = 'Error starting detection';
+            });
+    }
+    function stopDetection() {
+        fetch('/stop-detection')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerText = data.message;
+                const videoFeed = document.getElementById('videoFeed');
+                videoFeed.src = '';
+                videoFeed.style.display = 'none';
+            })
+            .catch(error => {
+                document.getElementById('message').innerText = 'Error stopping detection';
+            });
+    }
+</script>
+</body>
+</html>
