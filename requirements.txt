@@ -5,6 +5,7 @@ install the required modules through the IDE terminal :
 --tensorflow
 --keras
 --jupyter
+--Flask
 
 I used IntelliJ IDEA 
 
