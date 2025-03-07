@@ -99,10 +99,8 @@ install the required modules through the IDE terminal :
 
 For calling & messeging Feature:
 
-step 1:create twilio account.
-
-step 2:Insert your twilio credentials in the camera.py file.
-
+step 1: create twilio account.
+step 2: Insert your twilio credentials in the camera.py file.
 step 3: set up your number / take a free number in twilio.
 
  
