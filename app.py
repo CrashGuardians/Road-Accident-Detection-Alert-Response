@@ -33,14 +33,14 @@ def get_location():
 
 def send_sms():
     try:
-        account_sid = "ACf48d2c173f53f55c724731b2d643674b"
-        auth_token = "9dd61f1e3525f53ace8a4a95ddc5df93"
+        account_sid = "enter"
+        auth_token = "enter"
         client = Client(account_sid, auth_token)
         location = get_location()
         message = client.messages.create(
             body=f"Accident Detected! Location: {location}",
             from_="+15632783597",
-            to="+918129927118"
+            to="+enter"
         )
         print("SMS sent:", message.sid)
     except Exception as e:
@@ -48,12 +48,12 @@ def send_sms():
 
 def call_ambulance():
     try:
-        account_sid = "ACf48d2c173f53f55c724731b2d643674b"
-        auth_token = "9dd61f1e3525f53ace8a4a95ddc5df93"
+        account_sid = "enter"
+        auth_token = "enter"
         client = Client(account_sid, auth_token)
         call = client.calls.create(
             url="https://raw.githubusercontent.com/AakashVinod/twimlfiles/refs/heads/main/twiml_response.xml",
-            to="+918129927118",
+            to="+enter",
             from_="+15632783597"
         )
         print("Call made:", call.sid)
