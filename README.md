@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/69ecddbf-3db9-43bb-9c0e-81497fb50600
 
 # Features
 
-### Main Features : Beep Sound at time of crash + Screenshot of crash + Automatic Call and SMS with Google Map Link for Location
+### Main Features : Beep Sound at time of crash + Screenshot of crash + Automatic Call and SMS with Google Map Link for Location.
 
 ### Accident Detection: Utilizes computer vision algorithms to detect accidents based on visual cues.
 
