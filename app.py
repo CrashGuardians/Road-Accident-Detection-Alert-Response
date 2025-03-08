@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify, send_from_directory
+from flask import Flask, render_template, Response, jsonify, send_from_directory, request
 import cv2
 import numpy as np
 import time
@@ -13,8 +13,30 @@ app = Flask(__name__)
 
 # Global variables
 alarm_triggered = False
-video_capture = cv2.VideoCapture("car1.mp4")
+video_source = "car1.mp4"  # Default video source
+video_capture = None
 model = AccidentDetectionModel("model.json", "model_weights.keras")
+
+def initialize_video(source):
+    """Initialize the video capture with error handling."""
+    global video_capture
+    if video_capture:
+        video_capture.release()
+
+    if not os.path.exists(source):
+        print(f"Error: Video file '{source}' not found!")
+        return None
+
+    cap = cv2.VideoCapture(source)
+    if not cap.isOpened():
+        print(f"Error: Unable to open video source '{source}'")
+        return None
+
+    print(f"Successfully opened video: {source}")
+    return cap
+
+# Initialize video on startup
+video_capture = initialize_video(video_source)
 
 def play_beep():
     winsound.Beep(2500, 2000)
@@ -33,14 +55,14 @@ def get_location():
 
 def send_sms():
     try:
-        account_sid = "enter"
-        auth_token = "enter"
+        account_sid = "ACf48d2c173f53f55c724731b2d643674b"
+        auth_token = "9dd61f1e3525f53ace8a4a95ddc5df93"
         client = Client(account_sid, auth_token)
         location = get_location()
         message = client.messages.create(
             body=f"Accident Detected! Location: {location}",
             from_="+15632783597",
-            to="+enter"
+            to="+918129927118"
         )
         print("SMS sent:", message.sid)
     except Exception as e:
@@ -48,12 +70,12 @@ def send_sms():
 
 def call_ambulance():
     try:
-        account_sid = "enter"
-        auth_token = "enter"
+        account_sid = "ACf48d2c173f53f55c724731b2d643674b"
+        auth_token = "9dd61f1e3525f53ace8a4a95ddc5df93"
         client = Client(account_sid, auth_token)
         call = client.calls.create(
             url="https://raw.githubusercontent.com/AakashVinod/twimlfiles/refs/heads/main/twiml_response.xml",
-            to="+enter",
+            to="+918129927118",
             from_="+15632783597"
         )
         print("Call made:", call.sid)
@@ -73,17 +95,37 @@ def save_accident_photo(frame):
         print(f"Error saving accident photo: {e}")
 
 def gen_frames():
-    global alarm_triggered, video_capture
+    global alarm_triggered, video_capture, video_source
+
+    if video_capture is None or not video_capture.isOpened():
+        print(f"Error: Video source {video_source} is not initialized or cannot be opened.")
+        return
+
+    fps = video_capture.get(cv2.CAP_PROP_FPS)
+    print(f"Video Source: {video_source}, FPS: {fps}")
+
     while True:
-        success, frame = video_capture.read()
-        if not success:
+        if video_capture is None:
+            print("Error: Video capture is not initialized.")
             break
+
+        success, frame = video_capture.read()
+
+        if not success:
+            print(f"Error reading frame from {video_source}. Restarting video...")
+            video_capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
+
+        if frame is None or frame.size == 0:
+            print(f"Warning: Empty frame detected from {video_source}")
+            continue
+
         roi = cv2.resize(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), (250, 250))
         pred, prob = model.predict_accident(roi[np.newaxis, :, :])
+
         if pred == "Accident" and not alarm_triggered:
             prob_val = round(prob[0][0] * 100, 2)
             if prob_val > 99:
-                # Save screenshot before setting alarm_triggered
                 save_accident_photo(frame)
                 alarm_triggered = True
                 threading.Thread(target=play_beep, daemon=True).start()
@@ -91,10 +133,12 @@ def gen_frames():
                 threading.Thread(target=call_ambulance, daemon=True).start()
                 cv2.putText(frame, "Accident Detected!", (50, 50),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
         ret, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
 
 @app.route('/')
 def index():
@@ -104,23 +148,39 @@ def index():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/video_feed_cam2')
+def video_feed_cam2():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 @app.route('/start-detection')
 def start_detection():
-    global alarm_triggered, video_capture
+    global alarm_triggered, video_capture, video_source
     alarm_triggered = False
-    # Restart video capture from beginning
-    video_capture.release()
-    video_capture = cv2.VideoCapture("car1.mp4")
+    cam_number = request.args.get('source', '1')  # Default to cam 1
+    source = "car1.mp4" if cam_number == "1" else "car2.mp4"
+    video_source = source
+
+    if video_capture:
+        video_capture.release()
+
+    video_capture = cv2.VideoCapture(video_source)
+
+    # Debugging: Check if video opens
+    if not video_capture.isOpened():
+        print(f"Error: Could not open {video_source}")
+        return jsonify({'error': f'Could not open {video_source}'})
+
     video_capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
-    return jsonify({'message': 'Accident detection started!'})
+    return jsonify({'message': 'Accident detection started!', 'source': video_source})
+
 
 @app.route('/stop-detection')
 def stop_detection():
     global video_capture
-    video_capture.release()
+    if video_capture:
+        video_capture.release()
     return jsonify({'message': 'Accident detection stopped!'})
 
-# Routes for screenshot gallery
 @app.route('/accident_photos/<filename>')
 def accident_photo(filename):
     return send_from_directory('accident_photos', filename)
