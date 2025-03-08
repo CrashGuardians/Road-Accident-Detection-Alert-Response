@@ -57,7 +57,6 @@
             color: #ff4757;
             animation: pulse 2s infinite;
         }
-        /* The video stream is served as an MJPEG stream via an <img> tag */
         img#videoFeed {
             margin-top: 20px;
             width: 100%;
@@ -80,26 +79,32 @@
 <div class="container">
     <i class="fas fa-car-crash icon"></i>
     <h1>Accident Detection System</h1>
-    <button onclick="startDetection()">Start Detection</button>
+
+    <button onclick="startDetection(1)">Start Detection - Cam 1</button>
+    <button onclick="startDetection(2)">Start Detection - Cam 2</button>
     <button onclick="stopDetection()">Stop Detection</button>
     <button onclick="window.location.href='/screenshots'">View Screenshots</button>
+
     <img id="videoFeed" src="" alt="Video Stream">
     <p id="message"></p>
 </div>
+
 <script>
-    function startDetection() {
-        fetch('/start-detection')
-            .then(response => response.json())
+    function startDetection(camNumber) {
+        fetch(`/start-detection?source=${camNumber}`)
+                .then(response => response.json())
             .then(data => {
                 document.getElementById('message').innerText = data.message;
                 const videoFeed = document.getElementById('videoFeed');
-                videoFeed.src = '/video';
+                videoFeed.src = camNumber === 1 ? '/video' : '/video_feed_cam2';
                 videoFeed.style.display = 'block';
             })
             .catch(error => {
                 document.getElementById('message').innerText = 'Error starting detection';
+                console.error("Error:", error);
             });
     }
+
     function stopDetection() {
         fetch('/stop-detection')
             .then(response => response.json())
@@ -111,6 +116,7 @@
             })
             .catch(error => {
                 document.getElementById('message').innerText = 'Error stopping detection';
+                console.error("Error:", error);
             });
     }
 </script>
