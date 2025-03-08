@@ -1,5 +1,5 @@
 # Front-End
-![Screenshot (100)](https://github.com/user-attachments/assets/e58d1e21-36ad-4523-a711-3be4f49bcca1)
+![image](https://github.com/user-attachments/assets/dfaddea9-6a32-4973-b5ff-c0dbc5402399)
 
 # Start-Detection
 ![Screenshot (98)](https://github.com/user-attachments/assets/010f2a25-46f2-4f10-afdc-b716e42db8fd)
