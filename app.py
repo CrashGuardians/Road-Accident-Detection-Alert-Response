@@ -62,7 +62,7 @@ def send_sms():
         message = client.messages.create(
             body=f"Accident Detected! Location: {location}",
             from_="+15632783597",
-            to="+918129927118"
+            to="+91812"
         )
         print("SMS sent:", message.sid)
     except Exception as e:
@@ -75,7 +75,7 @@ def call_ambulance():
         client = Client(account_sid, auth_token)
         call = client.calls.create(
             url="https://raw.githubusercontent.com/AakashVinod/twimlfiles/refs/heads/main/twiml_response.xml",
-            to="+918129927118",
+            to="+91812",
             from_="+15632783597"
         )
         print("Call made:", call.sid)
